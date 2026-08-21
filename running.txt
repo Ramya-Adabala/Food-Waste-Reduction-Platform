@@ -1,0 +1,15 @@
+VsCode- Backend folder-------C:\Users\Ramya\Desktop\Projects\Food Waste Reduction Platform\backend
+
+Maven will installed
+
+Then open FoodWasteApplication.java ----- click run
+
+
+
+Opem command prompt and run this
+
+
+cd "C:\Users\Ramya\Desktop\Projects\Food Waste Reduction Platform\frontend"
+
+
+npm run dev
