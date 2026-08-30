@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Navigate } from 'react-router-dom';
 import { Leaf, LogIn, UserPlus, LogOut, User, Activity, AlertCircle } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:38472';
+const apiUrl = (path) => "${API_URL}";
 
 
 function App() {
@@ -87,7 +88,7 @@ function Login({ setUser }) {
     setLoading(true);
     
     try {
-      const res = await fetch('/api/users/login', {
+      const res = await fetch(apiUrl('/api/users/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -155,7 +156,7 @@ function Register() {
     setLoading(true);
     
     try {
-      const res = await fetch('/api/users/register', {
+      const res = await fetch(apiUrl('/api/users/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -274,17 +275,17 @@ function Dashboard({ user }) {
   React.useEffect(() => {
     const fetchDonations = () => {
       if (user.role === 'NGO') {
-        fetch('/api/donations')
+        fetch(apiUrl('/api/donations'))
           .then(res => res.json())
           .then(data => setDonationsFeed(data))
           .catch(err => console.error(err));
           
-        fetch(`/api/donations/ngo/${user.userId}`)
+        fetch(apiUrl(`/api/donations/ngo/${user.userId}`))
           .then(res => res.json())
           .then(data => setNgoClaimedDonations(data))
           .catch(err => console.error(err));
       } else if (user.role === 'RESTAURANT') {
-        fetch(`/api/donations/restaurant/${user.userId}`)
+        fetch(apiUrl(`/api/donations/restaurant/${user.userId}`))
           .then(res => res.json())
           .then(data => setRestaurantDonations(data))
           .catch(err => console.error(err));
@@ -315,7 +316,7 @@ function Dashboard({ user }) {
     
     // Simulate backend call for now until we build the backend endpoint
     try {
-      const res = await fetch('/api/donations', {
+      const res = await fetch(apiUrl('/api/donations'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...donationData, restaurantId: user.userId })
@@ -326,7 +327,7 @@ function Dashboard({ user }) {
         setIsDonating(false);
         setDonationData({ foodItem: '', quantity: '', unit: 'kg', expirationDate: '' });
         // Fetch updated donations to show it immediately
-        fetch(`/api/donations/restaurant/${user.userId}`)
+        fetch(apiUrl(`/api/donations/restaurant/${user.userId}`))
           .then(r => r.json())
           .then(data => setRestaurantDonations(data));
       } else {
@@ -343,7 +344,7 @@ function Dashboard({ user }) {
   const handleClaim = async (donationId) => {
     setClaimingId(donationId);
     try {
-      const res = await fetch(`/api/donations/${donationId}/claim`, {
+      const res = await fetch(apiUrl(`/api/donations/${donationId}/claim`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ngoId: user.userId })
@@ -353,7 +354,7 @@ function Dashboard({ user }) {
         setMessage('Donation claimed successfully! The restaurant has been notified.');
         
         // Refresh the claim history
-        fetch(`/api/donations/ngo/${user.userId}`)
+        fetch(apiUrl(`/api/donations/ngo/${user.userId}`))
           .then(res => res.json())
           .then(data => setNgoClaimedDonations(data));
       } else {
@@ -373,7 +374,7 @@ function Dashboard({ user }) {
       return;
     }
     try {
-      const res = await fetch(`/api/donations/${donationId}/approve`, {
+      const res = await fetch(apiUrl(`/api/donations/${donationId}/approve`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ deliveryTime })
