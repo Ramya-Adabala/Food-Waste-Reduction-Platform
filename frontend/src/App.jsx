@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Navigate } f
 import { Leaf, LogIn, UserPlus, LogOut, User, Activity, AlertCircle } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:38472';
-const apiUrl = (path) => "${API_URL}";
+const apiUrl = (path) => `${API_URL}${path}`;
 
 
 function App() {
